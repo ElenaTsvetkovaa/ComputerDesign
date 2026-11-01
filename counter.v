@@ -1,6 +1,6 @@
 module counter(
-  input        clk,
-  input        rst,
+  input         clk,
+  input         rst,
   output [3:0] Count
 );
   wire FirstSum, SecondSum, ThirdSum, ForthSum;
