@@ -40,4 +40,8 @@ computer-design-2026/
 └── counter.v       # Counter
 ```
 
+<<<<<<< HEAD
 Design files are named `<name>.v` and their testbenches `tb_<name>.v`.
+=======
+Design files are named `<name>.v` and their testbenches `tb_<name>.v`.
+>>>>>>> ad5adeacce99d1724cdc3ebdf5cf2a642c2631b0
