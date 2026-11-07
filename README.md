@@ -15,6 +15,24 @@ The project covers the core building blocks of a simple processor datapath, and 
 
 Every stage is synchronized to the clock, so one clock cycle moves data one stage forward. The address is stored in pipeline registers and travels together with the data through each stage. This way, when a new input enters the pipeline, the operation still in progress writes its result to its **own** address and is not affected by the new input.
 
+## Data hazards
+
+Because several operations are in the pipeline at the same time, a **read-after-write (RAW) hazard** can occur: a new input reads an address whose previous result has not been written back to memory yet, so the read would return stale data.
+
+For example, with the inputs `5, 5`, the second read of address 5 happens before the first operation has finished and written its result.
+
+**How it is resolved: address comparison + forwarding (bypassing).**
+Each address travels through the pipeline registers together with its data, so the address of every in-flight operation is always known. Comparators check whether two stages work on the same address. If they do, a multiplexer takes the freshest value directly from a later stage instead of waiting for the memory:
+
+| Hazard | Check | Forwarded value |
+|---|---|---|
+| Address in S1 matches the address in S4 (write in progress) | `compare_res`, registered by `comparison_keeper` | `res_keeper_out` (S5) instead of `Rdata` (memory) |
+| Address in S2 matches the address in S4 | `addr_s2_to_addr_s3 == addr_s4_to_mem` | `result_reg_to_mem` instead of the memory value |
+| Address in S3 matches the address in S4 | `addr_s3_to_addr_s4 == addr_s4_to_mem` | `result_reg_to_mem + 1` instead of `mem_register_to_addr + 1` |
+
+This way the pipeline never has to stall: every operation always works with the most recent value for its own address, and the throughput stays at one input per clock cycle.
+
+
 ## Components
 
 - **Basic logic gates**: AND, OR, NOT, NAND, NOR, XOR, XNOR
@@ -40,8 +58,4 @@ computer-design-2026/
 └── counter.v       # Counter
 ```
 
-<<<<<<< HEAD
 Design files are named `<name>.v` and their testbenches `tb_<name>.v`.
-=======
-Design files are named `<name>.v` and their testbenches `tb_<name>.v`.
->>>>>>> ad5adeacce99d1724cdc3ebdf5cf2a642c2631b0
