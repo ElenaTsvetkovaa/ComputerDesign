@@ -1,4 +1,4 @@
-module d_flip_flop(
+module d_flip_flop_1bit(
   input data_in,
   input clk,
   input reset,
@@ -12,3 +12,21 @@ module d_flip_flop(
       data_out <= data_in;
   end
 endmodule
+
+
+
+module d_flip_flop(
+  input [7:0] data_in,
+  input clk,
+  input reset,
+  output reg [7:0] data_out
+);
+  always @(posedge clk or negedge reset)
+  begin
+    if (reset == 1'b0)
+      data_out <= 1'b0;
+    else
+      data_out <= data_in;
+  end
+endmodule
+
